@@ -1,0 +1,16 @@
+{
+  "name": "coronamelder-typo-experiment",
+  "version": "1.0.0",
+  "description": "An experiment to see how many people type it wrong.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Arjan Vlek",
+  "license": "ISC",
+  "dependencies": {
+    "sqlite3": "4.2.0"
+  }
+}

@@ -1,0 +1,177 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Stats</title>
+
+  <script src="//code.highcharts.com/highcharts.js"></script>
+  <script src="//code.highcharts.com/modules/data.js"></script>
+  <script src="//code.highcharts.com/modules/exporting.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone.min.js"></script>
+  <script>
+  moment.tz.add("Europe/Amsterdam|AMT NST +0120 +0020 CEST CET|-j.w -1j.w -1k -k -20 -10|010101010101010101010101010101010101010101012323234545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545|-2aFcj.w 11b0 1iP0 11A0 1io0 1cM0 1fA0 1a00 1fA0 1a00 1fA0 1a00 1co0 1io0 1yo0 Pc0 1a00 1fA0 1Bc0 Mo0 1tc0 Uo0 1tA0 U00 1uo0 W00 1s00 VA0 1so0 Vc0 1sM0 UM0 1wo0 Rc0 1u00 Wo0 1rA0 W00 1s00 VA0 1sM0 UM0 1w00 fV0 BCX.w 1tA0 U00 1u00 Wo0 1sm0 601k WM0 1fA0 1cM0 1cM0 1cM0 16M0 1gMM0 1a00 1fA0 1cM0 1cM0 1cM0 1fA0 1a00 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|16e5");
+  </script>
+
+  <style>
+    .range-active {
+      font-weight: bold;
+    }
+    .range {
+      color: #4f4747;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 style="text-align: center;">Request Statistics</h2>
+  <div id="stats-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+  <div id="stats-ranges" style="text-align: center; margin: auto;"></div>
+</body>
+
+<script>
+function makeChart(containerName, title, description, yAxisName, csvFileName, chartCustomizeFunction) {
+  // We show data from 30 days ago until now by default
+  var rangeInDays = 30;
+  var maxDate = undefined;
+
+  function getMinDate() {
+    return moment().tz('Europe/Amsterdam').subtract(rangeInDays, 'days').valueOf();
+  }
+  
+  function getRangeInDays() {
+    return rangeInDays;
+  }
+
+  function setRangeInDays(newRange) {
+    rangeInDays = newRange;
+  }
+
+  Highcharts.setOptions({
+    time: {
+      timezone: 'Europe/Amsterdam'
+    }
+  });
+
+  var chart = Highcharts.chart(containerName, {
+    chart: {
+      type: 'spline',
+      zoomType: 'x'  
+    },
+    title: {
+        text: title
+    },
+    subtitle: {
+        text: description
+    },
+    data: {
+        csvURL: window.location.protocol + '//' + window.location.hostname + (window.location.port != 80 && window.location.port != 443 ? ':' + window.location.port : '') + window.location.pathname + '/' + csvFileName,
+        dataRefreshRate: 60, // The data is updated every minute
+        enablePolling: true,
+        parseDate: function(date) {
+          // Replace the Excel formatted dates to the format 'yyyy-MM-ddThh:mm:ss'
+          var replaced = date.replace(/\s/, 'T');
+          return moment(replaced).tz('Europe/Amsterdam').valueOf();
+        }
+    },
+    xAxis: {
+      events: {
+        // If 'reset zoom' is clicked, do not fully reset the zoom but again only show the last 2 days of data
+        setExtremes: function(e) {
+          if (typeof e.min === 'undefined' && typeof e.max === 'undefined') {
+            e.preventDefault();
+            e.target.setExtremes(getMinDate(), maxDate);
+          }
+        }
+      }
+    },
+    yAxis: {
+      // Ensure only full numbers are shown on the Y axis
+      minTickInterval: 1,
+      title: {
+        text: yAxisName
+      }
+    }
+  });
+
+  // Start with the default allowed date range
+  setTimeout(function() {
+    chart.xAxis[0].setExtremes(getMinDate(), maxDate);
+  }, 0);
+  
+  // We have a sliding window graph.
+  // Therefore, update the left boundary of the X axis of the chart every minute (as that's the interval at which new data is added)
+  setInterval(function() {
+    chart.xAxis[0].setExtremes(getMinDate(), maxDate);
+  }, 60000);
+
+  chart.getMinDate = getMinDate;
+  chart.maxDate = maxDate;
+  chart.getRangeInDays = getRangeInDays;
+  chart.setRangeInDays = setRangeInDays;
+
+  if (chartCustomizeFunction) {
+    setTimeout(function() {
+      chartCustomizeFunction(chart);
+    }, 0);
+  }
+  return chart;
+}
+</script>
+<script>
+function createChartRangeButtons(chart, containerName) {
+  // Create series of hyperlinks to change graph range
+  var allowedRanges = [1, 3, 7, 30, 90, 180, 365];
+  var activeElement;
+  function makeOnClickFunction(ii, elem) {
+    return function(e) {
+      chart.setRangeInDays(allowedRanges[ii]);
+      chart.xAxis[0].setExtremes(chart.getMinDate(), chart.maxDate);
+      elem.className = 'range range-active';
+      if (activeElement !== elem) {
+        activeElement.className = 'range';
+        activeElement = elem;
+      }
+      return false;
+    }
+  }
+  
+  for (var i = 0; i < allowedRanges.length; i++) {
+    var allowedRange = allowedRanges[i];
+
+    var aElement = document.createElement('a');
+
+    var className = 'range';
+    if (allowedRange == chart.getRangeInDays()) {
+      className += ' range-active';
+      activeElement = aElement;
+    }
+
+    aElement.id = 'range-' + i + '-d';
+    aElement.className = className;
+    aElement.href = '#';
+    aElement.onclick = makeOnClickFunction(i, aElement);
+    var text = allowedRange + 'd';
+    var linkText = document.createTextNode(text);
+    aElement.appendChild(linkText);
+    
+    document.getElementById(containerName).appendChild(aElement);
+
+    if (i != allowedRanges.length - 1) {
+      var spacingSpan = document.createElement('span');
+      var spacingTextNode = document.createTextNode('\xa0\xa0\xa0');
+      spacingSpan.appendChild(spacingTextNode);
+      document.getElementById(containerName).appendChild(spacingSpan);      
+    }
+  }
+}
+</script>
+<script>
+var STATS_CONTAINER = 'stats-container';
+
+var requestsStatisticsChart = makeChart('stats-container', 'Requests', 'Amount of requests to coronamelde.nl instead of coronamelder.nl', 'Requests', 'data.csv');
+createChartRangeButtons(requestsStatisticsChart, 'stats-ranges');
+</script>
+</html>
