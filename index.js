@@ -89,6 +89,14 @@ const requestListener = (req, res) => {
     return;
   }
 
+  if (req.url === '/robots.txt') {
+    const robotsTxtContents = fs.readFileSync('robots.txt', { encoding: 'utf-8' });
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' });
+    res.write(robotsTxtContents);
+    res.end();
+    return;
+  }
+
   if (req.url === '/request-stats' || req.url === '/request-stats/') {
     const htmlFileContents = fs.readFileSync('request-statistics.html', { encoding: 'utf-8' });
     res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
