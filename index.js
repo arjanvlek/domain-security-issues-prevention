@@ -68,7 +68,7 @@ function getCurrentTimestamp() {
 // Writes incoming IP, method, URL and userAgent to the access log
 const writeAccessLogEntry = request => {
   const timestamp = getCurrentTimestamp();
-  const ip = request.connection.remoteAddress.replace('::ffff:', '');
+  const ip = request.headers['X-Real-IP'] || request.headers['x-real-ip'] || request.connection.remoteAddress.replace('::ffff:', '');
   const userAgent = request.headers['user-agent'] || "-";
   const logEntry = `[${timestamp}] ${ip} "${request.method} ${request.url}" "${userAgent}"`;
   fs.appendFileSync(ACCESS_LOG_FILE, `${logEntry}\n`);
@@ -86,7 +86,7 @@ const writeErrorLogEntry = errorMessage => {
 // Writes a redirected request's details to the SQLite database
 const writeDatabaseEntry = request => {
   const timestamp = getCurrentTimestamp();
-  const ip = request.connection.remoteAddress.replace('::ffff:', '');
+  const ip = request.headers['X-Real-IP'] || request.headers['x-real-ip'] || request.connection.remoteAddress.replace('::ffff:', '');
   const userAgent = request.headers['user-agent'] || "-";
   const referer = request.headers['referer'] || "-";
   const url = request.url;
