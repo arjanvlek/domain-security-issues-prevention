@@ -2,6 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import {writeAccessLogEntry} from './logging.mjs';
 import {initializeDatabase, readStatisticsFromDatabase, writeDatabaseEntry} from './database.mjs';
+import {openRelativeFile} from './utils.mjs';
 
 const DEFAULT_CONFIG = {
   // Specifies which files are used for access logs and error logs
@@ -26,7 +27,7 @@ const DEFAULT_CONFIG = {
   WARN_USER_DOMAIN_NAME: 'videofile.mov',
 
   // If mode is 'warn_user', explains to the user what just happened and why user is here.
-  WARN_USER_DOMAIN_EXPLANATION: 'You are currently on the Web page named %DOMAINNAME%. You may have wanted to click on a file name, but this is not the case!',
+  WARN_USER_DOMAIN_EXPLANATION: 'You are currently on a website named <b>videofile.mov</b>. You may have wanted to click on a video file, but you\'ve clicked on a website link instead.',
 
   STATISTICS_GRAPH_TITLE: 'Requests',
   STATISTICS_GRAPH_DESCRIPTION: 'Amount of requests to arjanvle.nl instead of arjanvlek.nl'
@@ -58,11 +59,61 @@ const requestListener = (req, res) => {
   // Create the access log item for this request
   writeAccessLogEntry(req, CONFIG.ACCESS_LOG_FILE);
 
-  // We don't have a favicon and manifest
-  if (req.url === '/favicon.ico' || req.url === '/manifest.json') {
-    res.writeHead(404, 'Not Found');
-    res.end();
-    return;
+  // Favicon package: png, ico, svg, xml and webmanifest.
+  if (req.url.endsWith('.png')) {
+    const file = openRelativeFile(req.url);
+
+    if (file.success) {
+      res.writeHead(200, { 'Content-Type': 'image/png' });
+      res.write(file.data);
+      res.end();
+      return;
+    }
+
+  }
+
+  if (req.url.endsWith('.ico')) {
+    const file = openRelativeFile(req.url);
+
+    if (file.success) {
+      res.writeHead(200, { 'Content-Type': 'image/vnd.microsoft.icon' });
+      res.write(file.data);
+      res.end();
+      return;
+    }
+  }
+
+  if (req.url.endsWith('.svg')) {
+    const file = openRelativeFile(req.url, true);
+
+    if (file.success) {
+      res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+      res.write(file.data);
+      res.end();
+      return;
+    }
+  }
+
+  if (req.url.endsWith('.xml')) {
+    const file = openRelativeFile(req.url, true);
+
+    if (file.success) {
+      res.writeHead(200, { 'Content-Type': 'application/xml' });
+      res.write(file.data);
+      res.end();
+      return;
+    }
+  }
+
+  if (req.url.endsWith('.webmanifest')) {
+    const file = openRelativeFile(req.url, true);
+
+    if (file.success) {
+      res.writeHead(200, {'Content-Type': 'application/manifest+json'});
+      res.write(file.data);
+      res.end();
+      return;
+    }
   }
 
   // Do not allow search engines to index this site
@@ -73,7 +124,6 @@ const requestListener = (req, res) => {
     res.end();
     return;
   }
-
 
   // Return the statistics HTML page if navigated to /request-stats
   if (req.url === '/request-stats' || req.url === '/request-stats/') {
@@ -108,12 +158,24 @@ const requestListener = (req, res) => {
     return;
   }
 
-  // Redirect all other calls to the properly spelled domain
   writeDatabaseEntry(req, CONFIG.DATA_BASE_FILE);
 
-  const redirDomain = CONFIG.REDIRECT_DOMAIN.startsWith('http') ? CONFIG.REDIRECT_DOMAIN : 'https://' + CONFIG.REDIRECT_DOMAIN;
-  res.writeHead(301, { 'Cache-Control': 'no-cache', 'Location': redirDomain });
-  res.end();
+  if (CONFIG.MODE === 'redirect') {
+    // Redirect all other calls to the properly spelled domain
+    const redirDomain = CONFIG.REDIRECT_DOMAIN.startsWith('http') ? CONFIG.REDIRECT_DOMAIN + req.url : 'https://' + CONFIG.REDIRECT_DOMAIN + req.url;
+    res.writeHead(301, { 'Cache-Control': 'no-cache', 'Location': redirDomain });
+    res.end();
+
+  } else {
+    // Redirect all other calls to the warning page
+    const warningPageHtmlContent = fs.readFileSync('user-warning-page.tpl.html', { encoding: 'utf-8' })
+        .replaceAll('%DOMAIN_NAME%', CONFIG.WARN_USER_DOMAIN_NAME)
+        .replaceAll('%EXPLANATION_TEXT%', CONFIG.WARN_USER_DOMAIN_EXPLANATION);
+
+    res.writeHead(200, { 'Cache-Control': 'no-cache', 'Content-Type': 'text/html; charset=UTF-8' });
+    res.write(warningPageHtmlContent);
+    res.end();
+  }
 };
 
 http.createServer(requestListener).listen(CONFIG.SERVER_INSTANCE_HTTP_PORT);

@@ -1,4 +1,6 @@
 // Adds a zero to the number if less than 10
+import fs from 'fs';
+
 function zeroPad(n) {
     return n < 10 ? "0" + n : "" + n;
 }
@@ -14,4 +16,21 @@ export function getCurrentTimestamp() {
     const seconds = zeroPad(now.getSeconds());
 
     return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
+}
+
+export function openRelativeFile(url, isText = false) {
+    const replacedUrl = '.' + url.replaceAll('..', '');
+    try {
+        const data = fs.readFileSync(replacedUrl, isText ? { encoding: 'utf-8' } : undefined);
+        return {
+            success: true,
+            data
+        }
+    } catch (e) {
+        console.error('Error opening file ' + replacedUrl, e);
+        return {
+            success: false,
+            data: null
+        }
+    }
 }
