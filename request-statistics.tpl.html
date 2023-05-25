@@ -40,7 +40,7 @@ function makeChart(containerName, title, description, yAxisName, csvFileName, ch
   function getMinDate() {
     return moment().tz('Europe/Amsterdam').subtract(rangeInDays, 'days').valueOf();
   }
-  
+
   function getRangeInDays() {
     return rangeInDays;
   }
@@ -58,7 +58,7 @@ function makeChart(containerName, title, description, yAxisName, csvFileName, ch
   var chart = Highcharts.chart(containerName, {
     chart: {
       type: 'spline',
-      zoomType: 'x'  
+      zoomType: 'x'
     },
     title: {
         text: title
@@ -100,7 +100,7 @@ function makeChart(containerName, title, description, yAxisName, csvFileName, ch
   setTimeout(function() {
     chart.xAxis[0].setExtremes(getMinDate(), maxDate);
   }, 0);
-  
+
   // We have a sliding window graph.
   // Therefore, update the left boundary of the X axis of the chart every minute (as that's the interval at which new data is added)
   setInterval(function() {
@@ -137,7 +137,7 @@ function createChartRangeButtons(chart, containerName) {
       return false;
     }
   }
-  
+
   for (var i = 0; i < allowedRanges.length; i++) {
     var allowedRange = allowedRanges[i];
 
@@ -156,14 +156,14 @@ function createChartRangeButtons(chart, containerName) {
     var text = allowedRange + 'd';
     var linkText = document.createTextNode(text);
     aElement.appendChild(linkText);
-    
+
     document.getElementById(containerName).appendChild(aElement);
 
     if (i != allowedRanges.length - 1) {
       var spacingSpan = document.createElement('span');
       var spacingTextNode = document.createTextNode('\xa0\xa0\xa0');
       spacingSpan.appendChild(spacingTextNode);
-      document.getElementById(containerName).appendChild(spacingSpan);      
+      document.getElementById(containerName).appendChild(spacingSpan);
     }
   }
 }
@@ -171,7 +171,7 @@ function createChartRangeButtons(chart, containerName) {
 <script>
 var STATS_CONTAINER = 'stats-container';
 
-var requestsStatisticsChart = makeChart('stats-container', 'Requests', 'Amount of requests to coronamelde.nl instead of coronamelder.nl', 'Requests', 'data.csv');
+var requestsStatisticsChart = makeChart('stats-container', '%GRAPH_TITLE%', '%GRAPH_DESCRIPTION%', 'Amount', 'data.csv');
 createChartRangeButtons(requestsStatisticsChart, 'stats-ranges');
 </script>
 </html>

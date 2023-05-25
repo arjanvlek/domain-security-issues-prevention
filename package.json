@@ -1,7 +1,8 @@
 {
-  "name": "coronamelder-typo-experiment",
+  "name": "domain-security-issues-prevention",
   "version": "1.0.0",
-  "description": "An experiment to see how many people type it wrong.",
+  "description": "Tool which warns users about insecure domains which are too easy to register, or redirects misspelled domains to correct ones.",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -11,6 +12,6 @@
   "author": "Arjan Vlek",
   "license": "ISC",
   "dependencies": {
-    "sqlite3": "4.2.0"
+    "sqlite3": "5.1.6"
   }
 }
