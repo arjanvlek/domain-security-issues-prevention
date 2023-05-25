@@ -180,5 +180,5 @@ const requestListener = (req, res) => {
 
 http.createServer(requestListener).listen(CONFIG.SERVER_INSTANCE_HTTP_PORT);
 
-console.log("Node.js HTTP server listening at port " + CONFIG.SERVER_INSTANCE_HTTP_PORT);
+console.log("Node.js HTTP server listening at http://localhost:" + CONFIG.SERVER_INSTANCE_HTTP_PORT);
 
