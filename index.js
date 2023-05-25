@@ -23,6 +23,10 @@ const DEFAULT_CONFIG = {
   // If mode is 'redirect', specifies the domain to redirect the user to.
   REDIRECT_DOMAIN: 'https://arjanvlek.nl',
 
+  // If mode is 'redirect', explains to the user what just happened and why user is here.
+  REDIRECT_DOMAIN_EXPLANATION: 'You have probably misspelled the website <b>arjanvlek.nl</b>. This page allows you to navigate to the right website.',
+
+
   // If mode is 'warn_user', specifies the current domain the user is on.
   WARN_USER_DOMAIN_NAME: 'videofile.mov',
 
@@ -161,9 +165,15 @@ const requestListener = (req, res) => {
   writeDatabaseEntry(req, CONFIG.DATA_BASE_FILE);
 
   if (CONFIG.MODE === 'redirect') {
-    // Redirect all other calls to the properly spelled domain
+    // Show the redirect page to redirect the user to the proper domain.
     const redirDomain = CONFIG.REDIRECT_DOMAIN.startsWith('http') ? CONFIG.REDIRECT_DOMAIN + req.url : 'https://' + CONFIG.REDIRECT_DOMAIN + req.url;
-    res.writeHead(301, { 'Cache-Control': 'no-cache', 'Location': redirDomain });
+    const warningPageHtmlContent = fs.readFileSync('redirect-page.tpl.html', { encoding: 'utf-8' })
+      .replaceAll('%DOMAIN_NAME%', redirDomain)
+      .replaceAll('%DOMAIN_NAME_NO_HTTP_PREFIX%', CONFIG.REDIRECT_DOMAIN.replaceAll(/https?:\/\//g, ''))
+      .replaceAll('%EXPLANATION_TEXT%', CONFIG.REDIRECT_DOMAIN_EXPLANATION);
+
+    res.writeHead(200, { 'Cache-Control': 'no-cache', 'Content-Type': 'text/html; charset=UTF-8' });
+    res.write(warningPageHtmlContent);
     res.end();
 
   } else {

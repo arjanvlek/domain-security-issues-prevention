@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Redirecting...</title>
+
+</head>
+
+<body>
+
+<main style="text-align: center; margin: auto;">
+    <h1>You will be redirected to %DOMAIN_NAME_NO_HTTP_PREFIX% shortly...</h1>
+
+    <a id="cancel" href="javascript:void(0)"><p onclick="cancelCountdown()">Cancel...</p></a>
+
+    <!-- https://www.svgrepo.com/svg/129928/security-alert-symbol-of-an-exclamation-sign-inside-a-shield -->
+    <div style="max-height: 150px">
+        <svg fill="#000000"
+             version="1.1"
+             id="Capa_1"
+             xmlns="http://www.w3.org/2000/svg"
+             xmlns:xlink="http://www.w3.org/1999/xlink"
+             width="150px"
+             height="150px"
+             viewBox="0 0 28.125 28.125"
+             xml:space="preserve">
+            <g>
+                <g>
+                    <path fill="#FFA54C" d="M14.063,0L1.659,6.617v0.464c0,13.979,11.906,20.767,12.026,20.834l0.378,0.21l0.377-0.21
+                        c0.12-0.067,12.026-6.854,12.026-20.834V6.617L14.063,0z M14.063,26.329C12.13,25.096,3.445,18.92,3.214,7.544l10.849-5.787
+                        l10.849,5.786C24.681,18.919,15.996,25.094,14.063,26.329z"/>
+                    <path fill="#FFA54C" d="M4.004,8.001c0.416,10.17,7.652,15.812,10.059,17.412c2.407-1.601,9.643-7.241,10.059-17.411L14.063,2.636L4.004,8.001z
+                         M14,21.191c-1.067,0-1.778-0.771-1.778-1.799c0-1.047,0.731-1.799,1.778-1.799c1.048,0,1.739,0.752,1.759,1.799
+                        C15.759,20.421,15.067,21.191,14,21.191z M15.127,16.605h-2.253l-0.456-8.954h3.144L15.127,16.605z"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <p>
+        %EXPLANATION_TEXT%
+    </p>
+
+    <h2>Not redirected automatically?</h2>
+
+    <p>
+        Go to <a href="%DOMAIN_NAME%">%DOMAIN_NAME%</a>
+    </p>
+
+    <h2>Info about this webpage</h2>
+
+    <p>
+        This domain has been reserved by <a href="https://github.com/arjanvlek"><b>Arjan Vlek</b></a>, a Dutch software developer.<br/>
+        I've reserved this domain and created this webpage, to protect you from malware and other bad things which can happen online.<br/>
+        The reason I've done this, is because it was too easy to get hold of this domain, so anyone could have registered and mis-used it for cheap.<br/>
+        To provide transparency, the <a href="https://github.com/arjanvlek/domain-security-issues-prevention">source code</a> of this webpage is available for you to see (Open Source).
+    </p>
+
+    <a href="javascript:void(0)">
+        <h5 id="privacy_toggle" onclick="showPrivacyStatement()">Privacy Statement</h5>
+    </a>
+
+    <div id="privacy" style="display: none">
+        <p>
+            To provide insight in usage of this mis-spelled domain, some data about your visit has been collected.<br/>
+            The aim of the author is to collect minimal user data, and your data is not offered or sold to anybody else.<br/>
+            This website does not use cookies and does not store any information in your browser.<br/>
+            The following information about you is collected:
+        </p>
+
+        <ul style="list-style: inside">
+            <li>Your IP Address</li>
+            <li>Your web browser's <a href="https://en.wikipedia.org/wiki/User_agent">user agent</a></li>
+            <li>The date and time you saw this webpage</li>
+            <li>The URL you requested on the domain (if any). An example would be "%DOMAIN_NAME%/news"</li>
+            <li>The website that <a href="https://en.wikipedia.org/wiki/HTTP_referer">referred</a> you to this domain (if any)</li>
+        </ul>
+
+        <p>
+            If you want to have any stored information about yourself deleted, please lookup your <a href="https://www.whatsmyip.org/">IP Address</a>.<br/>
+            Send that, with a short notice, in an email to arjan[.]vlek[.]dev@gmail[.] com<br/>
+            <i>(remove the "[" and "]" brackets).</i><br/>
+            I will then delete any stored information for that IP Address within 7 days.
+        </p>
+    </div>
+
+
+</main>
+
+<script>
+    window._countdownCount = 5;
+    window._countdown = setInterval(function() {
+        window._countdownCount--;
+        if (window._countdownCount <= 0) {
+            window.location.href = '%DOMAIN_NAME%';
+        }
+    }, 1000);
+
+    function cancelCountdown() {
+        if (window._countdown) {
+            clearInterval(window._countdown);
+            var cancel = document.getElementById('cancel');
+            if (cancel) {
+                cancel.style.display = 'none';
+            }
+            window._countdown = null;
+        }
+    }
+
+    function showPrivacyStatement() {
+        cancelCountdown();
+        var privacy = document.getElementById('privacy');
+
+        if (privacy) {
+            if (privacy.style.display == 'none') {
+                privacy.style.display = 'block';
+            } else {
+                privacy.style.display = 'none';
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

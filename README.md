@@ -8,6 +8,10 @@ Web application which can be used to perform 2 tasks:
 
 If the user navigates to misspelled domain (e.g. [arjanvle.nl](arjanvle.nl)), the app will auto-redirect the user to the right domain (e.g. [arjanvlek.nl](arjanvlek.nl)).
 
+Before this happens, an informational page with access to the privacy information will be shown:
+
+![Redirect page for misspelled domains](redirect_page.jpg)
+
 For the administrator, we will log how often this has happened. This provides insight in how often users
 were led to a wrong domain.
 
@@ -23,7 +27,7 @@ a misleading link.
 
 ## Statistics page for administrators
 
-**This page should be secured at the web server level (e.g. basic authentication in Apache or Nginx).**
+**This page is secured on the webserver with a username and password which only the administrator knows.**
 
 The site administrator can see how many requests (either redirects or landing pages) have been performed. 
 This provides insight how many times a misspelled or misleading website is opened by users.
