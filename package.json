@@ -13,5 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "sqlite3": "5.1.6"
+  },
+  "resolutions": {
+    "socks": "2.7.4"
   }
 }
