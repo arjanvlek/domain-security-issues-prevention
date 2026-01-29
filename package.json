@@ -15,6 +15,7 @@
     "sqlite3": "5.1.7"
   },
   "resolutions": {
+    "brace-expansion": "1.1.12",
     "socks": "2.8.7",
     "tar": "7.5.7"
   }
