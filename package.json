@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "Arjan Vlek",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "sqlite3": "6.0.1"
   },
