@@ -1,8 +1,14 @@
-# Domain security issue prevention app
+# Domain Security Issues Prevention
 
-Web application which can be used to perform 2 tasks:
+A tool for website administrators to warn users about misspelled / misleading domains.
+Provides minimal statistics how often such domain is reached, designed with user privacy in mind.
+
+This is a Node.js web application which can be used in 2 different scenarios:
 - Redirect users of misspelled domains to correctly-spelled domains
-- Warn users of misleading domains
+- Warn users about misleading domains
+
+This tool requires you to purchase the misspelled or misleading domain name yourself, and 
+set a `A` DNS record to the IP address of the server that is hosting this application.
 
 ## Redirection of misspelled domains
 
