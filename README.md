@@ -1,16 +1,16 @@
 # Domain Security Issues Prevention
 
 A tool for website administrators to warn users about misspelled / misleading domains.
-Provides minimal statistics how often such domain is reached, designed with user privacy in mind.
+Provides minimal statistics how often such domains are reached, designed with user privacy in mind.
 
 This is a Node.js web application which can be used in 2 different scenarios:
-- Redirect users of misspelled domains to correctly-spelled domains
-- Warn users about misleading domains
+- Redirect Mode: Redirects users of a misspelled domain to the correctly spelled domain
+- Placeholder Mode: Warns users about a misleading domain
 
-This tool requires you to purchase the misspelled or misleading domain name yourself, and 
+This tool requires you to purchase the misspelled or misleading domain yourself, and 
 set a `A` DNS record to the IP address of the server that is hosting this application.
 
-## Redirection of misspelled domains
+## Redirect Mode
 
 If the user navigates to misspelled domain (e.g. [arjanvle.nl](arjanvle.nl)), the app will auto-redirect the user to the right domain (e.g. [arjanvlek.nl](arjanvlek.nl)).
 
@@ -21,7 +21,7 @@ Before this happens, an informational page with access to the privacy informatio
 For the administrator, we will log how often this has happened. This provides insight in how often users
 were led to a wrong domain.
 
-## Warning of misleading domains
+## Placeholder Mode
 
 If the user navigates to a misleading domain (e.g. [videofile.mov](videofile.mov)), the app will show a landing
 page to inform the user of what just happened.
@@ -33,13 +33,15 @@ a misleading link.
 
 ## Statistics page for administrators
 
-**This page is secured on the webserver with a username and password which only the administrator knows.**
+**This page must be secured on the webserver with a username and password which only the administrator knows.**
 
 The site administrator can see how many requests (either redirects or landing pages) have been performed. 
 This provides insight how many times a misspelled or misleading website is opened by users.
 
 If the administrator navigates to `/request-stats`, the app will provide a graph of how many requests were sent
 to the domain per day.
+
+It is **important** to secure this URL with some sort of authentication, such as Apache or NGINX basic authentication.
 
 ![Statistics page for administrator](statistics_page.jpg)
 
