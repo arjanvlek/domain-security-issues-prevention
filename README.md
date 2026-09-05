@@ -31,7 +31,7 @@ page to inform the user of what just happened.
 For the administrator, we will log how often this has happened. This provides insight if users often click on
 a misleading link.
 
-## Statistics page for administrators
+## Statistics Page (for administrators)
 
 **This page must be secured on the webserver with a username and password which only the administrator knows.**
 
@@ -42,6 +42,7 @@ If the administrator navigates to `/request-stats`, the app will provide a graph
 to the domain per day.
 
 It is **important** to secure this URL with some sort of authentication, such as Apache or NGINX basic authentication.
+This project itself does not provide any form of authentication.
 
 ![Statistics page for administrator](statistics_page.jpg)
 
@@ -58,4 +59,7 @@ Minimal user data is collected in order to provide the counts:
 This is nothing more than what would be logged by a typical Web server's access log. 
 This data, except of a daily count number, is not returned anywhere, in order to protect user privacy.
 
+## Configuring the app (for administrators)
 
+Adjust the section `DEFAULT_CONFIG` in the file `index.js`. Set the correct mode (`redirect` or `warn_user`). 
+Then, set either `REDIRECT_DOMAIN` or `WARN_USER_DOMAIN_NAME`. Finally, adjust all texts to match your domain name.
